@@ -234,11 +234,18 @@ body{
         $("body").on("click", ".editBtn", function () {
            // alert("I was clicked");
             alert(this.id);
+        //var deleteKey = $(this).attr("id");
+        //console.log($(this).attr("id"));
+
+
+
         });
 
-                $("body").on("click", ".deleteBtn", function () {
-           // alert("I was clicked");
-            alert(this.id);
+        $("body").on("click", ".deleteBtn", function () {
+        // alert("I was clicked");
+        // alert(this.id);        
+        database.ref().child(this.id).remove();
+        location.reload();
         });
     </script>
 </body>
