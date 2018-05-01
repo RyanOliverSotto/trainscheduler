@@ -170,31 +170,27 @@ body{
             destination = childSnapshot.val().destination;
             first = childSnapshot.val().first;
             frequency = childSnapshot.val().frequency;
-            var key = childSnapshot.key;
             var tBody = $("tbody");
             var tRow = $("<tr>");
-
+            var sv = childSnapshot.val();
+            
             //Call the function to calculate minutes until next train and next train times
             timeCalc();
             
             // Methods run on jQuery selectors return the selector they we run on
             // This is why we can create and save a reference to a td in the same statement we update its text
-            var trainTd = $("<td>").text(train);
-            var destinationTd = $("<td>").text(destination);
-            var freqencyTd = $("<td>").text(frequency);
+            var trainTd = $("<td>").text(sv.train);
+            var destinationTd = $("<td>").text(sv.destination);
+            var freqencyTd = $("<td>").text(sv.frequency);
             var nextArrival = $("<td>").text(calcNext);
             var minutesAway = $("<td>").text(calcMinutesAway);
-            var updateBtn = $("<button>").text("Edit").attr("id",key).addClass("editBtn");
-                //$("updateBtn").attr("id",key);
-            var deleteBtn = $("<button>").text("Delete").attr("id",key).addClass("deleteBtn");    
-               // $("deleteBtn").attr("id",key);           
             // Append the newly created table data to the table row
-            tRow.append(trainTd, destinationTd, freqencyTd, nextArrival, minutesAway,updateBtn,deleteBtn);
+            tRow.append(trainTd, destinationTd, freqencyTd, nextArrival, minutesAway);
             // Append the table row to the table body
             tBody.append(tRow);
             //Clear the values from the form
             clearForm();
-        });//End ChildAdded 
+        });//End ChildAdded
 
 
         function timeCalc() {
@@ -229,17 +225,7 @@ body{
             $("#formDestination").val("");
             $("#formFirst").val("");
             $("#formFrequency").val("");
-        };
-
-        $("body").on("click", ".editBtn", function () {
-           // alert("I was clicked");
-            alert(this.id);
-        });
-
-                $("body").on("click", ".deleteBtn", function () {
-           // alert("I was clicked");
-            alert(this.id);
-        });
+        }
     </script>
 </body>
 
