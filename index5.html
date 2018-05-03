@@ -170,7 +170,7 @@ button{
             });//End push    
             }
             else{
-                database.ref().child(key).update({
+                database.ref().update({
                 train: train,
                 destination: destination,
                 first: first,
@@ -211,8 +211,8 @@ button{
             var freqencyTd = $("<td>").text(frequency).attr("id","frequency"+i);
             var nextArrival = $("<td>").text(calcNext).attr("id","first"+i).attr("val",first);
             var minutesAway = $("<td>").text(calcMinutesAway);
-            var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn").attr("dataKey",key);
-            //alert (index);
+            var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn").attr("key",key);
+            //alert (key);
                 //$("updateBtn").attr("id",key);
             var deleteBtn = $("<button>").text("Delete").attr("id",key).addClass("deleteBtn");    
                // $("deleteBtn").attr("id",key);           
@@ -272,15 +272,13 @@ button{
             //database.ref.once("value")
            // .then (function(snapshot){
             var myRow = this.id;
-            var key =$(this).attr("dataKey");
-            //var myKey = this.id2;
-            //alert (key);
-            //console.log (this.id2);
+            var myKey = this.key;
+            alert (myKey);
             toggle = "Edit";
             $("#panelTrain").text("Edit Existing Train");
             $(".btn-primary").text(toggle);
             $(".btn-primary").val(key);
-            //alert (this.val);
+            alert (this.val);
             train =$("#train"+myRow).text();
             destination = $("#destination"+myRow).text();
             frequency = $("#frequency"+myRow).text();

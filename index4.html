@@ -33,9 +33,6 @@ body{
     text-align: center;
     background-color: rgba(gray, gray, gray, .8)
 }
-button{
-    margin: 7px 5px 5px 5px;
-}
 
 </style>
 
@@ -57,7 +54,6 @@ button{
                                 <th>Frequency</th>
                                 <th>Next Arrival</th>
                                 <th>Minutes Away</th>
-                                <th>Modify Schedule</th>
                             </tr>
                             <tr id="trainData">
                                 <td id="train"></td>
@@ -72,7 +68,7 @@ button{
             </div><!--End col lg 12-->
             <div class="col-lg-12">
                 <div class="panel panel-primary">
-                    <div class="panel-heading" id="panelTrain">Add New Train</div>
+                    <div class="panel-heading">Add New Train</div>
                     <div class="panel-body">
                         <form class="form-horizontal" id="formData" action="">
                             <div class="form-group">
@@ -101,7 +97,7 @@ button{
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <button id="submit" type="submit" class="btn btn-primary" val="">Submit</button>
+                                    <button id="submit" type="submit" class="btn btn-primary">Submit</button>
                                 </div>
                             </div>
                         </form>
@@ -132,7 +128,6 @@ button{
         var calcNext = 0;
         var calcMinutesAway = 0;
         var toggle = $(".btn-primary").text();
-        var key;
         //alert (toggle);
         //var tBody = $("tbody");
         //var tRow = $("<tr>");
@@ -150,7 +145,7 @@ button{
             //alert(destination);
             first = $("#formFirst").val().trim();
             frequency = parseInt($("#formFrequency").val().trim());
-            
+
             //console.log("__________________FROM SUBMIT_________________________");
             //console.log("train:", train);
             //console.log("destination:", destination);
@@ -158,30 +153,32 @@ button{
             //console.log("frequency:", frequency);
             //console.log("___________________________________________")
             
-            if (toggle==="Submit")
-            {
-                        // Save the new data in Firebase
-            database.ref().push({
-                train: train,
-                destination: destination,
-                first: first,
-                frequency: frequency,
-                dateAdded: firebase.database.ServerValue.TIMESTAMP
-            });//End push    
-            }
-            else{
-                database.ref().child(key).update({
-                train: train,
-                destination: destination,
-                first: first,
-                frequency: frequency,
-                dateAdded: firebase.database.ServerValue.TIMESTAMP
-            });//End update                   
-            }
 
-            //Clear the values from the form
-            clearForm();
-        });//End submit
+            if (toggle = "Submit") {
+                // Save the new data in Firebase 
+                database.ref().push({
+                    train: train,
+                    destination: destination,
+                    first: first,
+                    frequency: frequency,
+                    dateAdded: firebase.database.ServerValue.TIMESTAMP
+                });//End push        
+                };//End submit
+                //Clear the values from the form
+                //clearForm();
+                if (toggle = "Edit") {
+                    database.ref().push({
+                        train: train,
+                        destination: destination,
+                        first: first,
+                        frequency: frequency,
+                        dateAdded: firebase.database.ServerValue.TIMESTAMP
+                    });
+                };
+
+
+        
+
 
         // Project listener to when new data is added to DB is here.
         database.ref().on("child_added", function (childSnapshot) {
@@ -211,8 +208,7 @@ button{
             var freqencyTd = $("<td>").text(frequency).attr("id","frequency"+i);
             var nextArrival = $("<td>").text(calcNext).attr("id","first"+i).attr("val",first);
             var minutesAway = $("<td>").text(calcMinutesAway);
-            var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn").attr("dataKey",key);
-            //alert (index);
+            var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn");
                 //$("updateBtn").attr("id",key);
             var deleteBtn = $("<button>").text("Delete").attr("id",key).addClass("deleteBtn");    
                // $("deleteBtn").attr("id",key);           
@@ -261,7 +257,6 @@ button{
         };
 
         $("body").on("click", ".editBtn", function () {
-            //***************No matter how I assemble the firebase I cant pull a single row via the Key*****************
             //database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
             //database.ref().orderByChild("key").limitToFirst(1).on("value", this.id, function(snapshot) {
             //database.ref().orderByChild("dateAdded").equalTo("1525236473151").once("value", function(snapshot) {
@@ -272,15 +267,8 @@ button{
             //database.ref.once("value")
            // .then (function(snapshot){
             var myRow = this.id;
-            var key =$(this).attr("dataKey");
-            //var myKey = this.id2;
-            //alert (key);
-            //console.log (this.id2);
             toggle = "Edit";
-            $("#panelTrain").text("Edit Existing Train");
             $(".btn-primary").text(toggle);
-            $(".btn-primary").val(key);
-            //alert (this.val);
             train =$("#train"+myRow).text();
             destination = $("#destination"+myRow).text();
             frequency = $("#frequency"+myRow).text();
