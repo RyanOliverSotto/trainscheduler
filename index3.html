@@ -86,7 +86,7 @@ body{
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="formFirst">First Time (HH/MM/AM|PM -ex 12:15 AM)</label>
                                 <div class="col-sm-10">
-                                    <input class="form-control" id="formFirst" placeholder="">
+                                    <input type="time" class="form-control" id="formFirst" placeholder="">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -127,9 +127,6 @@ body{
         var first;
         var calcNext = 0;
         var calcMinutesAway = 0;
-        //var tBody = $("tbody");
-        //var tRow = $("<tr>");
-         var i = 1;
         // Create a variable to reference the database
         var database = firebase.database();
 
@@ -159,8 +156,6 @@ body{
                 frequency: frequency,
                 dateAdded: firebase.database.ServerValue.TIMESTAMP
             });//End push
-            //Clear the values from the form
-            clearForm();
         });//End submit
 
         // Project listener to when new data is added to DB is here.
@@ -175,23 +170,21 @@ body{
             destination = childSnapshot.val().destination;
             first = childSnapshot.val().first;
             frequency = childSnapshot.val().frequency;
-            dateAdded = childSnapshot.val().dateAdded;
             var key = childSnapshot.key;
             var tBody = $("tbody");
             var tRow = $("<tr>");
-
 
             //Call the function to calculate minutes until next train and next train times
             timeCalc();
             
             // Methods run on jQuery selectors return the selector they we run on
             // This is why we can create and save a reference to a td in the same statement we update its text
-            var trainTd = $("<td>").text(train).attr("id","train"+i);
-            var destinationTd = $("<td>").text(destination).attr("id","destination"+i);
-            var freqencyTd = $("<td>").text(frequency).attr("id","frequency"+i);
-            var nextArrival = $("<td>").text(calcNext).attr("id","first"+i).attr("val",first);
+            var trainTd = $("<td>").text(train);
+            var destinationTd = $("<td>").text(destination);
+            var freqencyTd = $("<td>").text(frequency);
+            var nextArrival = $("<td>").text(calcNext);
             var minutesAway = $("<td>").text(calcMinutesAway);
-            var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn");
+            var updateBtn = $("<button>").text("Edit").attr("id",key).addClass("editBtn");
                 //$("updateBtn").attr("id",key);
             var deleteBtn = $("<button>").text("Delete").attr("id",key).addClass("deleteBtn");    
                // $("deleteBtn").attr("id",key);           
@@ -200,8 +193,7 @@ body{
             // Append the table row to the table body
             tBody.append(tRow);
             //Clear the values from the form
-            //clearForm();
-            i++;
+            clearForm();
         });//End ChildAdded 
 
 
@@ -227,11 +219,11 @@ body{
             //var nextTrain = moment().add(tMinutesTillTrain, "minutes");
             calcNext = moment().add(calcMinutesAway, "minutes");
             //calcNext = moment(calcNext).format("MMM Do hh:mm:ss a");
-            calcNext = moment(calcNext).format('LT');
+            calcNext = moment(calcNext).format('LTS');
             //calcNext = moment().format('MMMM Do YYYY, h:mm:ss a'); 
             //console.log("ARRIVAL TIME: " + moment(calcNext).format("hh:mm"));
         }
-        
+
         function clearForm() {
             $("#formTrain").val("");
             $("#formDestination").val("");
@@ -240,60 +232,24 @@ body{
         };
 
         $("body").on("click", ".editBtn", function () {
-            //database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
-            //database.ref().orderByChild("key").limitToFirst(1).on("value", this.id, function(snapshot) {
-            //database.ref().orderByChild("dateAdded").equalTo("1525236473151").once("value", function(snapshot) {
-               // orderByChild("height").equalTo(25).on("child_added", function(snapshot)
-            //database.ref().orderByKey().equalTo.(this.id, function(snapshot) {
-                //database.ref().child(this.id).once("value",function(snapshot){
-            //database.ref().orderByChild("dateAdded").limitToFirst(1).on("value", function(snapshot){
-            //database.ref.once("value")
-           // .then (function(snapshot){
-            var myRow = this.id;
-            train =$("#train"+myRow).text();
-            destination = $("#destination"+myRow).text();
-            frequency = $("#frequency"+myRow).text();
-            //alert(frequency);
-            first = $("#first"+myRow).text();
-            console.log(train);
-            console.log(destination);
-            console.log(frequency);
-            console.log(first);
-            //console.log("train"+myRow);
-            //console.log(destination);
-            //console.log(frequency);
-            //console.log(first);
-            //$("#formFirst").removeAttr("time");
-            $("#formTrain").val(train);
-            $("#formDestination").val(destination);
-            $("#formFirst").val(first);
-            $("#formFrequency").val(frequency);
-            
-                    // storing the snapshot.val() in a variable for convenience
-            //var sv = snapshot.val();
-            //console.log(sv);
-            //});//End 
-            //database.ref().on("child_added", function (childSnapshot) {
-          // alert("Row " + this.id + " was clicked");
- 
-            //alert(this.id);
+           // alert("I was clicked");
+            alert(this.id);
         //var deleteKey = $(this).attr("id");
         //console.log($(this).attr("id"));
-        /*database.ref().child(this.id).update({
+        database.ref().child(this.id).update({
             train: "Soul Train", 
                 destination: "New York",
                 first: "07:00 pm",
                 frequency: 18,
                 dateAdded: firebase.database.ServerValue.TIMESTAMP  
-            
-        }); End editBtn click*/ 
+        });
         });
 
         $("body").on("click", ".deleteBtn", function () {
-        // alert("I was clicked");
+         alert("I was clicked");
         // alert(this.id);        
         database.ref().child(this.id).remove();
-        location.reload();
+        //location.reload();
         });
     </script>
 </body>
