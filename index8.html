@@ -57,16 +57,12 @@ background-color: rgba(146, 21, 15, .8);
 
 .panel > .panel-heading {
 background-color: rgb(247, 194, 66, .8);
-color: black;
 }
 
 .tableRow{
     color: yellow;
 }
 
-.table{
-    color: white;
-}
 </style>
 
 <body>
@@ -80,14 +76,24 @@ color: black;
                 <div class="panel panel-primary">
                     <div class="panel-heading">Train Schedule</div>
                     <div class="panel-body">
-                        <table class="table table-responsive table-bordered table-condensed">
-                            <tr>
+                        <table class="table table-hover">
+                            <tr class="tableRow">
                                 <th>Train Name</th>
                                 <th>Destination</th>
                                 <th>Frequency</th>
                                 <th>Next Arrival</th>
                                 <th>Minutes Away</th>
-                                <th>Modify Schedule</th>
+                                <th>Edit</th>
+                                <th>Remove</th>
+                            </tr>
+                            <tr id="trainData">
+                                <td id="train"></td>
+                                <td id="destination"></td>
+                                <td id="freqency"></td>
+                                <td id="calcNext"></td>
+                                <td id="calcMinutesAway"></td>
+                                <td id="buttonEdit"></td>
+                                <td id="buttonAdd"></td>
                             </tr>
                         </table>
                     </div> <!--End panel body-->
@@ -113,7 +119,7 @@ color: black;
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="formFirst">First Time (HH/MM/AM|PM -ex 12:15 AM)</label>
                                 <div class="col-sm-10">
-                                    <input class="form-control" id="formFirst" placeholder="" type="time">
+                                    <input class="form-control" id="formFirst" placeholder="">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -125,7 +131,6 @@ color: black;
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <button id="submit" type="submit" class="btn btn-primary" val="">Submit</button>
-                                    <button id="clear" type="submit" class="btn btn-primary" val="">Clear</button>
                                 </div>
                             </div>
                         </form>
@@ -155,10 +160,12 @@ color: black;
         var first;
         var calcNext = 0;
         var calcMinutesAway = 0;
-        //These three variables were needed to capture edit functionality to the page
         var toggle = $(".btn-primary").text();
         var key;
-        var i = 1;
+        //alert (toggle);
+        //var tBody = $("tbody");
+        //var tRow = $("<tr>");
+         var i = 1;
         // Create a variable to reference the database
         var database = firebase.database();
 
@@ -172,27 +179,50 @@ color: black;
             //alert(destination);
             first = $("#formFirst").val().trim();
             frequency = parseInt($("#formFrequency").val().trim());
-            if (toggle === "Submit") {
-                // Save the new data in Firebase
-                database.ref().push({
-                    train: train,
-                    destination: destination,
-                    first: first,
-                    frequency: frequency,
-                    dateAdded: firebase.database.ServerValue.TIMESTAMP
-                });//End push    
+            //alert(key);
+            //console.log("__________________FROM SUBMIT_________________________");
+            //console.log("train:", train);
+            //console.log("destination:", destination);
+            //console.log("first:", first);
+            //console.log("frequency:", frequency);
+            //console.log("___________________________________________")
+            //alert (toggle);
+            if (toggle==="Submit")
+            {
+                        // Save the new data in Firebase
+            database.ref().push({
+                train: train,
+                destination: destination,
+                first: first,
+                frequency: frequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            });//End push    
             }
-            if (toggle === "Edit") {
-                // Update existing node in Firebase
+            if (toggle ==="Edit" ) {
+                //alert(key);
+                //database.ref(key).update({
+                /*train: train,
+                destination: destination,
+                first: first,
+                frequency: frequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+                train: "Hardcode",
+                destination: "Hardcode CIty",
+                first: "12:00 AM",
+                frequency: 99,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP*/
+                //balert(key);
                 database.ref(key).update({
-                    train: train,
-                    destination: destination,
-                    first: first,
-                    frequency: frequency,
-                    dateAdded: firebase.database.ServerValue.TIMESTAMP
-                });//End update     
-                //Refresh the page
-                location.reload();
+                train: train, 
+                destination: destination,
+                first: first,
+                frequency: frequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP  
+                
+        //}); End editBtn click*/ 
+
+            });//End update     
+            location.reload();              
             }
 
             //Clear the values from the form
@@ -201,6 +231,12 @@ color: black;
 
         // Project listener to when new data is added to DB is here.
         database.ref().on("child_added", function (childSnapshot) {
+            //console.log("__________________FROM CHILD ADDED______________");
+            //console.log("Train:", childSnapshot.val().train);
+            //console.log("Destination:", childSnapshot.val().destination);
+            //console.log("First:", childSnapshot.val().first);
+            //console.log("Frequency:", childSnapshot.val().frequency);
+            //console.log("___________________________________________")
             train = childSnapshot.val().train;
             destination = childSnapshot.val().destination;
             first = childSnapshot.val().first;
@@ -209,6 +245,7 @@ color: black;
             var key = childSnapshot.key;
             var tBody = $("tbody");
             var tRow = $("<tr>");
+
 
             //Call the function to calculate minutes until next train and next train times
             timeCalc();
@@ -220,15 +257,20 @@ color: black;
             var freqencyTd = $("<td>").text(frequency).attr("id","frequency"+i);
             var nextArrival = $("<td>").text(calcNext).attr("id","first"+i).attr("val",first);
             var minutesAway = $("<td>").text(calcMinutesAway);
-            var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn").attr("dataKey",key).addClass("btn-primary");
+            //var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn").attr("dataKey",key);
+            var updateBtn= $("<td>").text("<i class='fas fa-edit'></i>").attr("id",i).addclass("editBtn").attr("dataKey",key);//            var minutesAway = $("<td>").text(calcMinutesAway);');           
+            
+            
             //alert (index);
                 //$("updateBtn").attr("id",key);
-            var deleteBtn = $("<button>").text("Delete").attr("id",key).addClass("deleteBtn").addClass("btn-primary");    
+            var deleteBtn = $("<button>").text("Delete").attr("id",key).addClass("deleteBtn");    
                // $("deleteBtn").attr("id",key);           
             // Append the newly created table data to the table row
-            tRow.append(trainTd, destinationTd, freqencyTd, nextArrival, minutesAway,updateBtn,deleteBtn);
+            tRow.append(trainTd, destinationTd, freqencyTd, nextArrival, minutesAway, updateBtn, deleteBtn);
             // Append the table row to the table body
             tBody.append(tRow);
+            //Clear the values from the form
+            //clearForm();
             i++;
         });//End ChildAdded 
 
@@ -268,13 +310,27 @@ color: black;
         };
 
         $("body").on("click", ".editBtn", function () {
-            event.preventDefault();
+            //database.ref().
+            //***************No matter how I assemble the firebase I cant pull a single row via the Key*****************
+            //database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
+            //database.ref().orderByChild("key").limitToFirst(1).on("value", this.id, function(snapshot) {
+            //database.ref().orderByChild("dateAdded").equalTo("1525236473151").once("value", function(snapshot) {
+               // orderByChild("height").equalTo(25).on("child_added", function(snapshot)
+            //database.ref().orderByKey().equalTo.(this.id, function(snapshot) {
+                //database.ref().child(this.id).once("value",function(snapshot){
+            //database.ref().orderByChild("dateAdded").limitToFirst(1).on("value", function(snapshot){
+            //database.ref.once("value")
+           // .then (function(snapshot){
             var myRow = this.id;
             key =$(this).attr("dataKey");
+            //alert (key);
+            //var myKey = this.id2;
+            //alert (key);
+            //console.log (this.id2);
             toggle = "Edit";
             $("#panelTrain").text("Edit Existing Train");
-            $("#submit").text(toggle);
-            $("#submit").val(key);
+            $(".btn-primary").text(toggle);
+            $(".btn-primary").val(key);
             //alert (this.val);
             train =$("#train"+myRow).text();
             destination = $("#destination"+myRow).text();
@@ -289,31 +345,37 @@ color: black;
             //console.log(destination);
             //console.log(frequency);
             //console.log(first);
-            $("#formFirst").removeAttr("type");
+            //$("#formFirst").removeAttr("time");
             $("#formTrain").val(train);
             $("#formDestination").val(destination);
             $("#formFirst").val(first);
             $("#formFrequency").val(frequency);
-            //$("#formFirst").attr("type","time");
+            
+                    // storing the snapshot.val() in a variable for convenience
+            //var sv = snapshot.val();
+            //console.log(sv);
+            //});//End 
+            //database.ref().on("child_added", function (childSnapshot) {
+          // alert("Row " + this.id + " was clicked");
+ 
+            //alert(this.id);
+        //var deleteKey = $(this).attr("id");
+        //console.log($(this).attr("id"));
+        /*database.ref().child(this.id).update({
+            train: "Soul Train", 
+                destination: "New York",
+                first: "07:00 pm",
+                frequency: 18,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP  
+            
+        }); End editBtn click*/ 
         });
 
         $("body").on("click", ".deleteBtn", function () {
-            event.preventDefault();
         // alert("I was clicked");
         // alert(this.id);        
         database.ref().child(this.id).remove();
         location.reload();
-        });
-
-        $("body").on("click", "#clear", function () {
-            event.preventDefault();
-        alert("I was clicked");
-        // alert(this.id);        
-        clearForm();
-        toggle="Submit";
-        $("#submit").text(toggle);
-        $("#panelTrain").text("Add New Train");
-        $("#formFirst").attr("type","time");
         });
     </script>
 </body>
