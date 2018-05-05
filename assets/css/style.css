@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Share+Tech+Mono');
+
+body{
+    background-image: url("../images/trains-hd-wide-84466376.jpg");
+    background-image: url("../images/interiorTrain.jpg");
+}
+
+.well, h1, p{
+    text-align: center;
+
+}
+
+h1, p{
+    color:black;
+    font-family: 'Black Ops One', cursive;
+}
+
+button{
+    margin: 5px 5px 5px 5px;
+}
+
+.panel{
+background-color:rgba(74, 196, 247,.9);
+font-family: 'Share Tech Mono', monospace;
+}
+
+
+.well{
+    background-color:rgba(74, 196, 247,.9);
+}
+
+.control-label{
+    color:black;
+}
+
+.panel > .panel-heading {
+background-color: rgb(160, 204, 66, .9);
+color: black;
+font-family: 'Share Tech Mono', monospace;
+}
+
+.tableRow{
+    color: black;
+}
+
+.table{
+    color: black;
+    font-family: 'Share Tech Mono', monospace;
+}

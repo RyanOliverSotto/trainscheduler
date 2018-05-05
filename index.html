@@ -18,62 +18,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- Link to Moment.js should go here -->
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
-    <!-- Game Logic
+    <!-- Game Logic-->
     <script type="text/javascript" src="assets/js/app.js"></script>
-    <Adding the src for our Bootcamp driven styling
-    <link type="text/css" rel="stylesheet" href="assets/css/style.css">-->
+    <!--<Adding the src for our Bootcamp driven styling-->
+    <link type="text/css" rel="stylesheet" href="assets/css/style.css">
     <title>Firebase Schedule</title>
 </head>
-<style>
-body{
-    background-image: url("assets/images/trains-hd-wide-84466376.jpg");
-}
-
-.well, h1, p{
-    text-align: center;
-
-}
-
-h1, p{
-    color:white;
-}
-
-button{
-    margin: 7px 5px 5px 5px;
-}
-
-.panel{
-background-color: rgba(146, 21, 15, .8);
-}
-
-
-.well{
-    background-color: rgba(146, 21, 15, .8);
-}
-
-.control-label{
-    color:white;
-}
-
-.panel > .panel-heading {
-background-color: rgb(247, 194, 66, .8);
-color: black;
-}
-
-.tableRow{
-    color: yellow;
-}
-
-.table{
-    color: white;
-}
-</style>
 
 <body>
     <div class="container">
         <div class="well">
             <h1>Train Schedule</h1>
             <p>Northwestern Coding Bootcamp</p>
+            <p id="timer"></p>
         </div>
         <div class="row">
             <div class="col-lg-12">
@@ -90,9 +47,12 @@ color: black;
                                 <th>Modify Schedule</th>
                             </tr>
                         </table>
-                    </div> <!--End panel body-->
-                </div><!--End panel primary-->
-            </div><!--End col lg 12-->
+                    </div>
+                    <!--End panel body-->
+                </div>
+                <!--End panel primary-->
+            </div>
+            <!--End col lg 12-->
             <div class="col-lg-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading" id="panelTrain">Add New Train</div>
@@ -129,11 +89,16 @@ color: black;
                                 </div>
                             </div>
                         </form>
-                    </div><!--End panel -->
-                </div><!--End panel-->
-            </div><!--End div lg 12-->
-        </div><!--End Row-->
-    </div><!--End container-->
+                    </div>
+                    <!--End panel -->
+                </div>
+                <!--End panel-->
+            </div>
+            <!--End div lg 12-->
+        </div>
+        <!--End Row-->
+    </div>
+    <!--End container-->
 
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script>
@@ -156,9 +121,11 @@ color: black;
         var calcNext = 0;
         var calcMinutesAway = 0;
         //These three variables were needed to capture edit functionality to the page
-        var toggle = $(".btn-primary").text();
+        var toggle = $("#submit").text();
         var key;
         var i = 1;
+        var countDown = 61;
+        var intervalId;
         // Create a variable to reference the database
         var database = firebase.database();
 
@@ -212,21 +179,21 @@ color: black;
 
             //Call the function to calculate minutes until next train and next train times
             timeCalc();
-            
+
             // Methods run on jQuery selectors return the selector they we run on
             // This is why we can create and save a reference to a td in the same statement we update its text
-            var trainTd = $("<td>").text(train).attr("id","train"+i);
-            var destinationTd = $("<td>").text(destination).attr("id","destination"+i);
-            var freqencyTd = $("<td>").text(frequency).attr("id","frequency"+i);
-            var nextArrival = $("<td>").text(calcNext).attr("id","first"+i).attr("val",first);
+            var trainTd = $("<td>").text(train).attr("id", "train" + i);
+            var destinationTd = $("<td>").text(destination).attr("id", "destination" + i);
+            var freqencyTd = $("<td>").text(frequency).attr("id", "frequency" + i);
+            var nextArrival = $("<td>").text(calcNext).attr("id", "first" + i).attr("val", first);
             var minutesAway = $("<td>").text(calcMinutesAway);
-            var updateBtn = $("<button>").text("Edit").attr("id",i).addClass("editBtn").attr("dataKey",key).addClass("btn-primary");
+            var updateBtn = $("<button>").text("Edit").attr("id", i).addClass("editBtn").attr("dataKey", key).addClass("btn-primary");
             //alert (index);
-                //$("updateBtn").attr("id",key);
-            var deleteBtn = $("<button>").text("Delete").attr("id",key).addClass("deleteBtn").addClass("btn-primary");    
-               // $("deleteBtn").attr("id",key);           
+            //$("updateBtn").attr("id",key);
+            var deleteBtn = $("<button>").text("Delete").attr("id", key).addClass("deleteBtn").addClass("btn-primary");
+            // $("deleteBtn").attr("id",key);           
             // Append the newly created table data to the table row
-            tRow.append(trainTd, destinationTd, freqencyTd, nextArrival, minutesAway,updateBtn,deleteBtn);
+            tRow.append(trainTd, destinationTd, freqencyTd, nextArrival, minutesAway, updateBtn, deleteBtn);
             // Append the table row to the table body
             tBody.append(tRow);
             i++;
@@ -259,7 +226,7 @@ color: black;
             //calcNext = moment().format('MMMM Do YYYY, h:mm:ss a'); 
             //console.log("ARRIVAL TIME: " + moment(calcNext).format("hh:mm"));
         }
-        
+
         function clearForm() {
             $("#formTrain").val("");
             $("#formDestination").val("");
@@ -270,17 +237,17 @@ color: black;
         $("body").on("click", ".editBtn", function () {
             event.preventDefault();
             var myRow = this.id;
-            key =$(this).attr("dataKey");
+            key = $(this).attr("dataKey");
             toggle = "Edit";
             $("#panelTrain").text("Edit Existing Train");
             $("#submit").text(toggle);
             $("#submit").val(key);
             //alert (this.val);
-            train =$("#train"+myRow).text();
-            destination = $("#destination"+myRow).text();
-            frequency = $("#frequency"+myRow).text();
+            train = $("#train" + myRow).text();
+            destination = $("#destination" + myRow).text();
+            frequency = $("#frequency" + myRow).text();
             //alert(frequency);
-            first = $("#first"+myRow).text();
+            first = $("#first" + myRow).text();
             console.log(train);
             console.log(destination);
             console.log(frequency);
@@ -299,22 +266,38 @@ color: black;
 
         $("body").on("click", ".deleteBtn", function () {
             event.preventDefault();
-        // alert("I was clicked");
-        // alert(this.id);        
-        database.ref().child(this.id).remove();
-        location.reload();
+            // alert("I was clicked");
+            // alert(this.id);        
+            database.ref().child(this.id).remove();
+            location.reload();
         });
 
         $("body").on("click", "#clear", function () {
             event.preventDefault();
-        alert("I was clicked");
-        // alert(this.id);        
-        clearForm();
-        toggle="Submit";
-        $("#submit").text(toggle);
-        $("#panelTrain").text("Add New Train");
-        $("#formFirst").attr("type","time");
+            clearForm();
+            toggle = "Submit";
+            $("#submit").text(toggle);
+            $("#panelTrain").text("Add New Train");
+            $("#formFirst").attr("type", "time");
         });
+
+        //Add timer countdown logic
+        run();
+
+        function run() {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+            intervalId = setInterval(decrement, 1000);
+        }
+
+        function decrement() {
+            countDown--;
+            $("#timer").html("<p> Page will refresh in " + countDown + " seconds</p>");
+            if (countDown === 0) {
+                location.reload();
+            }
+        }
     </script>
 </body>
 

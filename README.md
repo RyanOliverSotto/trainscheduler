@@ -25,7 +25,12 @@ Try adding update and remove buttons for each train. Let the user edit the row's
 As a final challenge, make it so that only users who log into the site with their Google or GitHub accounts can use your site. You'll need to read up on Firebase authentication for this bonus exercise.
 
 #Outstanding issues
+Dry up the code and check for uniform naming conventions.
+Examine a more succinct way of capturing a singe node via the key.
+Authentification via Github.
 
+#Technology
+CSS | HTML | JavaScript | JQuery | Bootstrap
 
 #Author
 Ryan Oliver Sotto
