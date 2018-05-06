@@ -34,8 +34,8 @@ $(document).ready(function () {
     // Project add data functionality is here.
     $("#submit").on("click", function () {
         event.preventDefault();
-        alert("I was clicked");
-        break;
+        //alert("I was clicked");
+        //break;
         // Get the input values
         train = $("#formTrain").val().trim();
         //alert(train);
